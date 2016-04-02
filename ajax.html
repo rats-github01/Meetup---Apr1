@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ajax - Multiple</title>
+    <link rel="stylesheet" href="base.css">
+    <script>
+
+
+        // callback --> first argument error, second - data
+        // $.getJSON('url', function (data) {
+        //
+        // })
+        // $.ajax --> complete, success, error // dataType
+        function makeAjaxCall(url, callback) {
+            var xhr = new XMLHttpRequest(); // $.ajax, $.getJSON
+            xhr.open('get', url);
+            // events
+            xhr.addEventListener('readystatechange', function () {
+                console.log(xhr.readyState);
+                if (xhr.readyState === 4) {
+                    // successful?
+
+                    if (xhr.status === 200) {
+                        console.log('got back the data ... ');
+                        var obj = JSON.parse(xhr.responseText);
+                        console.log(obj); // string
+                        callback(null, obj);
+                    } else {
+                        console.log('Error: ', xhr);
+                        callback(xhr, null);
+                    }
+                }
+            });
+
+            // xhr.readyState --> 0, 1, 2, 3, 4
+            xhr.send();
+        }
+
+        makeAjaxCall('https://api.github.com/search/repositories?q=scipy', function (err, data) {
+            if (err) console.log('There was an error: ', err);
+            else document.querySelector('div:first-child').innerHTML = 'The number of items is ' + data.items.length;
+        });
+
+        makeAjaxCall('https://api.github.com/search/repositories?q=iot', function (err, data) {
+            if (err) console.log('There was an error: ', err);
+            else document.querySelector('div:last-child').innerHTML = 'The number of items is ' + data.items.length;
+        });
+
+
+
+    </script>
+</head>
+<body>
+
+    <div></div>
+<div></div>
+
+</body>
+</html>

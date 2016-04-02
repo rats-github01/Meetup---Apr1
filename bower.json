@@ -1,0 +1,19 @@
+{
+  "name": "Meetup - 3",
+  "version": "0.0.0",
+  "authors": [
+    "Bindhyeswari Prasad Mishra <bpmishra.mail@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "async": "~1.5.2",
+    "jquery": "~2.2.2"
+  }
+}

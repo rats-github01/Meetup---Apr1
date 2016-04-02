@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Async JS</title>
+    <script>
+
+        var xhr = new XMLHttpRequest(); // $.ajax, $.getJSON
+        xhr.open('get', 'https://api.github.com/search/repositories?q=scipy'); // headers
+        xhr.setRequestHeader('Accept', 'application/json');
+        // events
+        xhr.addEventListener('readystatechange', function () {
+            console.log(xhr.readyState);
+            if (xhr.readyState === 4) {
+                // successful?
+
+                if (xhr.status === 200) {
+                    console.log('got back the data ... ');
+                    var obj = JSON.parse(xhr.responseText);
+                    console.log(obj); // string
+                } else {
+                    console.log('Error: ', xhr);
+                }
+            }
+        });
+
+        // xhr.readyState --> 0, 1, 2, 3, 4
+        xhr.send(); // does not wait for the response to come back
+
+    </script>
+</head>
+<body>
+
+</body>
+</html>

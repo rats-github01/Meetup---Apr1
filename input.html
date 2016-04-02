@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Input</title>
+    <script>
+
+        // make 2 ajax calls and finish reading this file, before alerting the user
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // waiting for the DOM to parse
+            document.querySelector('input[type="file"]').addEventListener('change', function () {
+                console.log(this.files);
+                var file = this.files[0];
+                console.log(file);
+
+                var promise1 = createPromiseFromInput(file);
+                var promise2 = createPromiseForAJAX('https://api.github.com/search/repositories?q=nodejs');
+                var promise3 = createPromiseForAJAX('https://api.github.com/search/repositories?q=iot');
+
+                Promise.all([promise1, promise2, promise3]).then(function (results) {
+                    console.log(results);
+
+                });
+
+            });
+        });
+
+        function createPromiseFromInput(file) {
+            return new Promise(function (resolve, reject) {
+                var reader = new FileReader(); // Modernizr test?
+                reader.addEventListener('load', function () {
+                    // console.log(this.result);
+                    resolve(this.result);
+                });
+                reader.addEventListener('error', function (err) {
+                    reject(err);
+                });
+                // todo: ref https://developer.mozilla.org/en-US/docs/Web/API/FileReader
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function makeAjaxCall(url, callback) {
+            var xhr = new XMLHttpRequest(); // $.ajax, $.getJSON
+            xhr.open('get', url);
+            // events
+            xhr.addEventListener('readystatechange', function () {
+                console.log(xhr.readyState);
+                if (xhr.readyState === 4) {
+                    // successful?
+
+                    if (xhr.status === 200) {
+                        console.log('got back the data ... ');
+                        var obj = JSON.parse(xhr.responseText);
+                        // console.log(obj); // string
+                        callback(null, obj);
+                    } else {
+                        // console.log('Error: ', xhr);
+                        callback(xhr, null);
+                    }
+                }
+            });
+
+            // xhr.readyState --> 0, 1, 2, 3, 4
+            xhr.send();
+        }
+
+        /*makeAjaxCall('https://api.github.com/search/repositories?q=nodejs', function (err, data) {
+         console.log(data);
+         });*/
+
+        function createPromiseForAJAX(url) {
+            function input_promise(resolve, reject) {
+                // functions that are invoked for success or failure
+                makeAjaxCall(url, function (err, data) {
+                    if (err) reject(err);
+                    else resolve(data);
+                });
+            }
+            return new Promise(input_promise);
+        }
+
+    </script>
+</head>
+<body>
+
+<input type="file">
+<img src="" alt="input file">
+
+</body>
+</html>
